@@ -1,0 +1,22 @@
+name: ReitzRPG
+main: com.paulreitz.reitzrpg.Reitzrpgmain
+version: 1.0
+author: Paul Reitz
+description: A RPG plugin!
+commands:
+        ReitzRPG:
+                        description: Used to access all the ReitzRPG commands!
+        RPG:
+                        description: Used to access all the ReitzRPG commands!
+        Party:
+                        description: Used for ReitzRPG party system!
+permissions:
+    reitzrpg.setspawn:
+        description: Allows you to set world spawn!
+        default: op
+    reitzrpg.killmobs:
+        description: Allows you to remove all mobs
+        default: op
+    reitzrpg.reloadconfig:
+       description: Allows you to reload config
+       default: op
