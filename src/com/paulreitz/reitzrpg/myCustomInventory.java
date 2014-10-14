@@ -125,7 +125,8 @@ public class myCustomInventory implements Listener {
         	{ 
         			
             	Player player = (Player) event.getWhoClicked(); // The player that clicked the item
-            	PlayerData pd = new PlayerData(player.getName());
+            	//PlayerData pd = new PlayerData(player.getName());
+            	PlayerData pd = PlayerJoinListener.users.get(player.getName());
             	ItemStack clicked = event.getCurrentItem(); // The item that was clicked
         		// The inventory is our custom Inventory
             		if(clicked == null || clicked.getType() == null)
@@ -230,11 +231,11 @@ public class myCustomInventory implements Listener {
 						{
 							player.sendMessage(ChatColor.GREEN +"Attack upgrade: "+ ChatColor.GRAY+ "successful");
 							pd.getData().set("Attack", pd.getData().getInt("Attack")+1);
-							pd.save();
+							//pd.save();
 							currentlevel = pd.getData().getInt("Attack");
 							player.sendMessage(ChatColor.GREEN +"Attack is level: "+ ChatColor.GRAY+ currentlevel);
 							pd.getData().set("Combat-EXP", pd.getData().getInt("Combat-EXP")-attackupgradecost);
-							pd.save();
+							//pd.save(); no need to save for performance reasons
 							ScoreboardStuff.manageScoreboard(player, pd.getData().getString("Name"));
 							
 						}
@@ -261,11 +262,11 @@ public class myCustomInventory implements Listener {
 						{
 							player.sendMessage(ChatColor.GREEN +"Defense upgrade: "+ ChatColor.GRAY+ "successful");
 							pd.getData().set("Defense", pd.getData().getInt("Defense")+1);
-							pd.save();
+							//pd.save();
 							currentlevel = pd.getData().getInt("Defense");
 							player.sendMessage(ChatColor.GREEN +"Defense is level: "+ ChatColor.GRAY+ currentlevel);
 							pd.getData().set("Combat-EXP", pd.getData().getInt("Combat-EXP")-attackupgradecost);
-							pd.save();
+							//pd.save();
 							ScoreboardStuff.manageScoreboard(player, pd.getData().getString("Name"));
 						}
 						else
@@ -290,11 +291,11 @@ public class myCustomInventory implements Listener {
 						{
 							player.sendMessage(ChatColor.GREEN +"Magic upgrade: "+ ChatColor.GRAY+ "succesful");
 							pd.getData().set("Magic", pd.getData().getInt("Magic")+1);
-							pd.save();
+							//pd.save();
 							currentlevel = pd.getData().getInt("Magic");
 							player.sendMessage(ChatColor.BOLD + "Your magic is level " + currentlevel);
 							pd.getData().set("Combat-EXP", pd.getData().getInt("Combat-EXP")-magicupgradecost);
-							pd.save();
+							//pd.save();
 							ScoreboardStuff.manageScoreboard(player, pd.getData().getString("Name"));
 						}	
 						else
@@ -320,11 +321,11 @@ public class myCustomInventory implements Listener {
 						{
 							player.sendMessage(ChatColor.GREEN +"Archery upgrade: "+ ChatColor.GRAY+ "succesful");
 							pd.getData().set("Archery", pd.getData().getInt("Archery")+1);
-							pd.save();
+							//pd.save();
 							currentlevel = pd.getData().getInt("Archery");
 							player.sendMessage(ChatColor.GREEN + "Archery is level " + currentlevel);
 							pd.getData().set("Combat-EXP", pd.getData().getInt("Combat-EXP")-attackupgradecost);
-							pd.save();
+							//pd.save();
 							ScoreboardStuff.manageScoreboard(player, pd.getData().getString("Name"));
 						}	
 						else
@@ -356,7 +357,7 @@ public class myCustomInventory implements Listener {
 							player.setHealth(currentlevel);
 							player.sendMessage(ChatColor.GREEN +"Health is level: "+ ChatColor.GRAY+ currentlevel);
 							pd.getData().set("Combat-EXP", pd.getData().getInt("Combat-EXP")-healthupgradecost);
-							pd.save();
+							//pd.save();
 							ScoreboardStuff.manageScoreboard(player, pd.getData().getString("Name"));
 						
 						}
@@ -392,7 +393,7 @@ public class myCustomInventory implements Listener {
 							player.sendMessage(ChatColor.GREEN +"Backpack upgrade: "+ ChatColor.GRAY+ "succesful");
 							pd.getData().set("BackPack-Size", currentsize + 9);
 							pd.getData().set("Combat-EXP", pd.getData().getInt("Combat-EXP")-upgradecost);
-							pd.save();
+							//pd.save();
 						}
 						else
 						{
@@ -423,8 +424,9 @@ public class myCustomInventory implements Listener {
 
 
         			
-        			
+        		ScoreboardStuff.manageScoreboard(player, pd.getData().getString("Name"));		
         	}
+        	
         }
 }
 

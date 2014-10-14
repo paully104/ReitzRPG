@@ -261,7 +261,8 @@ public class CustomWeapons implements Listener
 			if(event.getDamager() instanceof Player)
 			{	
 			Player player = (Player) event.getDamager();
-			PlayerData pd = new PlayerData(player.getName());
+			//PlayerData pd = new PlayerData(player.getName()); old system changed OCtober 13th,2014
+			PlayerData pd = PlayerJoinListener.users.get(player.getName());
 			if(player.getItemInHand() == null || player.getItemInHand().hasItemMeta() == false
 				|| player.getItemInHand().getItemMeta().getDisplayName() == null)
 			{

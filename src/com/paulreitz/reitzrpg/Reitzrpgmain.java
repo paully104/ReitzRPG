@@ -45,6 +45,8 @@ public class Reitzrpgmain extends JavaPlugin implements Listener{
 	{
 		this.getCommand("Party").setExecutor(new PartySystem(this));
 		
+		this.getCommand("RpgSystem").setExecutor(new RpgSystem(this));
+		
 		
 		
 		try {
@@ -84,7 +86,7 @@ public class Reitzrpgmain extends JavaPlugin implements Listener{
 		new OnBlockBreakWoodcuttingListener(this), new WalljumpHandler(), new GrapplingHook(), new PlayerTrading(this),
 		new PlayerFishEventListener(), new OnBlockBreakDiggingListener(this), new LockDoors(this), new BlockRightClick(),
 		new CustomWeapons(this), new RespawningChest(this), new Magic(this), new SwordSkills(this), new CostDoors(this),
-		new BowSkills(this), new LootTables(this), new Config(this), new PartySystem(this));
+		new BowSkills(this), new LootTables(this), new Config(this), new PartySystem(this), new RpgSystem(this));
 		
 		getLogger().info("ReitzRPG is now enabled"); //$NON-NLS-1$
 		PlayerData.setup(this);// calls to PlayerData and initializes the individual configurations

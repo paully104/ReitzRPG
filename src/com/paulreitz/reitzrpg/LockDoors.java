@@ -41,7 +41,8 @@ public class LockDoors implements Listener
     	
     	for(Player p : list){
     		
-    		PlayerData pd = new PlayerData(p.getName());
+    		//PlayerData pd = new PlayerData(p.getName());
+    		PlayerData pd = PlayerJoinListener.users.get(p.getName());
     		
     		int count = pd.getData().getInt("Count")+1;
     		System.out.println(count + "this is the total count");

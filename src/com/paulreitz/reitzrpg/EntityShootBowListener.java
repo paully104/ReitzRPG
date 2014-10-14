@@ -28,7 +28,8 @@ public class EntityShootBowListener implements Listener {
         {
         	Player player = (Player) event.getEntity();
 			String player2 = player.getDisplayName();
-			PlayerData pd = new PlayerData(player2);
+			//PlayerData pd = new PlayerData(player2);
+			PlayerData pd = PlayerJoinListener.users.get(player2);
 			Entity arrow = event.getProjectile();
             if (event.getForce() >= 0.0) //== 1.0 means fully charged
             {

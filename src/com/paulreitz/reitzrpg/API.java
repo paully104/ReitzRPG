@@ -52,16 +52,19 @@ public final class API {
     }
     
     public static int getPlayerAttack(Player player) {
-    	PlayerData pd = new PlayerData(player.getName());
+    	//PlayerData pd = new PlayerData(player.getName());
+    	PlayerData pd = PlayerJoinListener.users.get(player.getName());
         return pd.getData().getInt("Attack");
     }
     
     public static void setPlayerAttack(Player player,Integer number) {
-    	PlayerData pd = new PlayerData(player.getName());
+    	//PlayerData pd = new PlayerData(player.getName());
+    	PlayerData pd = PlayerJoinListener.users.get(player.getName());
     	pd.getData().set("Attack", number);
     }
     public static int getPlayerDefense(Player player) {
-    	PlayerData pd = new PlayerData(player.getName());
+    	//PlayerData pd = new PlayerData(player.getName());
+    	PlayerData pd = PlayerJoinListener.users.get(player.getName());
         return pd.getData().getInt("Defense");
     }
     public static int getMonsterHealthBonus()
@@ -72,42 +75,51 @@ public final class API {
     }
     
     public static void setPlayerDefense(Player player,Integer number) {
-    	PlayerData pd = new PlayerData(player.getName());
+    	//PlayerData pd = new PlayerData(player.getName());
+    	PlayerData pd = PlayerJoinListener.users.get(player.getName());
     	pd.getData().set("Defense", number);
     }
     public static int getPlayerArchery(Player player) {
-    	PlayerData pd = new PlayerData(player.getName());
+    	//PlayerData pd = new PlayerData(player.getName());
+    	PlayerData pd = PlayerJoinListener.users.get(player.getName());
         return pd.getData().getInt("Archery");
     }
     
     public static void setPlayerArchery(Player player,Integer number) {
-    	PlayerData pd = new PlayerData(player.getName());
+    	//PlayerData pd = new PlayerData(player.getName());
+    	PlayerData pd = PlayerJoinListener.users.get(player.getName());
     	pd.getData().set("Archery", number);
     }
     public static int getPlayerMagic(Player player) {
-    	PlayerData pd = new PlayerData(player.getName());
+    	//PlayerData pd = new PlayerData(player.getName());
+    	PlayerData pd = PlayerJoinListener.users.get(player.getName());
         return pd.getData().getInt("Magic");
     }
     
     public static void setPlayerMagic(Player player,Integer number) {
-    	PlayerData pd = new PlayerData(player.getName());
+    	//PlayerData pd = new PlayerData(player.getName());
+    	PlayerData pd = PlayerJoinListener.users.get(player.getName());
     	pd.getData().set("Magic", number);
     }
     public static double getPlayerHealth(Player player) {
-    	PlayerData pd = new PlayerData(player.getName());
+    	//PlayerData pd = new PlayerData(player.getName());
+    	PlayerData pd = PlayerJoinListener.users.get(player.getName());
         return pd.getData().getDouble("Health");
     }
     public static void setPlayerHealth(Player player,Double number) {
-    	PlayerData pd = new PlayerData(player.getName());
+    	//PlayerData pd = new PlayerData(player.getName());
+    	PlayerData pd = PlayerJoinListener.users.get(player.getName());
     	pd.getData().set("Health", number);
     }
     public static int getPlayerBackpackSize(Player player) {
-    	PlayerData pd = new PlayerData(player.getName());
+    	//PlayerData pd = new PlayerData(player.getName());
+    	PlayerData pd = PlayerJoinListener.users.get(player.getName());
         return pd.getData().getInt("BackPack-Size");
     }
     
     public static void setPlayerBackpackSize(Player player,Integer number) {
-    	PlayerData pd = new PlayerData(player.getName());
+    	//PlayerData pd = new PlayerData(player.getName());
+    	PlayerData pd = PlayerJoinListener.users.get(player.getName());
     	if(number%9 == 0 && number < 54)
     	{
     	pd.getData().set("BackPack-Size", number);
@@ -117,12 +129,14 @@ public final class API {
     	}
     }
     public static String getPlayerBackpackContent(Player player) {
-    	PlayerData pd = new PlayerData(player.getName());
+    	//PlayerData pd = new PlayerData(player.getName());
+    	PlayerData pd = PlayerJoinListener.users.get(player.getName());
         return pd.getData().getString("Backpack");
     }
     
     public static void setPlayerBackpackContent(Player player,String backpackcontent) {
-    	PlayerData pd = new PlayerData(player.getName());
+    	//PlayerData pd = new PlayerData(player.getName());
+    	PlayerData pd = PlayerJoinListener.users.get(player.getName());
     	pd.getData().set("BackPack", backpackcontent);
     }
     

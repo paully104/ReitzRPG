@@ -10,6 +10,8 @@ commands:
                         description: Used to access all the ReitzRPG commands!
         Party:
                         description: Used for ReitzRPG party system!
+        RPGSYSTEM:
+                       description: Used for ReitzRPG system settings!
 permissions:
     reitzrpg.setspawn:
         description: Allows you to set world spawn!
