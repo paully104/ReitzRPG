@@ -268,8 +268,14 @@ public class DistanceLevel implements Listener {
 					event.setDamage(1);
 					return;
 				}
+				if(newdamage2 > 1 && player2.getItemInHand() == null)
+				{
+					event.setDamage(newdamage2/2);
+					return;
+				}
 				else
 				{
+					
 					event.setDamage(newdamage2);
 					return;
 				}
@@ -379,7 +385,7 @@ public class DistanceLevel implements Listener {
 	public void onFallDamage(EntityDamageEvent event)
 	{
 		if(event.getCause() == DamageCause.FALL && event.getEntity() instanceof Player
-				&& RpgSystem.WorldList.get(event.getEntity().getWorld().toString()) != null)//check to see if active world
+				&& (RpgSystem.WorldList.get(event.getEntity().getWorld().getName().toString()) != null))//check to see if active world
 		{
 			Player player = (Player) event.getEntity();
 			//PlayerData pd = new PlayerData(player.getName());
@@ -407,8 +413,10 @@ public class DistanceLevel implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)//was lowest
 	public void onMobspawn(CreatureSpawnEvent event)
 	{
-		if(RpgSystem.WorldList.get(event.getEntity().getWorld().toString()) != null)//check to see if rpg world
+		
+		if(RpgSystem.WorldList.get(event.getEntity().getWorld().getName().toString()) != null) //check to see if rpg world
 		{	
+			
 			
 		
 		
@@ -522,7 +530,7 @@ public class DistanceLevel implements Listener {
 		if(event.getEntity().getLastDamageCause() == null ||
 				event.getEntity().getLastDamageCause().getCause() == null ||
 				event.getEntity().getLastDamageCause().getCause() == DamageCause.CONTACT
-				&& RpgSystem.WorldList.get(event.getEntity().getWorld().toString()) != null) //check to see if active world
+				&& (RpgSystem.WorldList.get(event.getEntity().getWorld().getName().toString()) != null)) //check to see if active world
 		{
 			return;//no exp or anything for contact damage so mob farms dont work
 		}
@@ -538,7 +546,7 @@ public class DistanceLevel implements Listener {
 			double newexperiencedrop = event.getDroppedExp() + (getSpawnLevel(monster) * 2); //exp multiplier is 3 x the level
 			event.setDroppedExp((int) newexperiencedrop);
 			//start of exp hologram
-			FileConfiguration config = Reitzrpgmain.config;
+			//FileConfiguration config = Reitzrpgmain.config;
 			if(API.mobexpshow == true)
 			{
 			long time = new java.util.Date().getTime();
@@ -637,7 +645,7 @@ public class DistanceLevel implements Listener {
 		}
 		if(event.getEntity().getKiller() instanceof Player &&
 				event.getEntity().getLastDamageCause().getCause() == DamageCause.PROJECTILE
-				&& RpgSystem.WorldList.get(event.getEntity().getWorld().toString()) != null)
+				&& (RpgSystem.WorldList.get(event.getEntity().getWorld().getName().toString()) != null))
 		{
 			if(event.getEntity() instanceof Monster)
 			{
@@ -660,7 +668,7 @@ public class DistanceLevel implements Listener {
 			
 		}
 		if(event.getEntity().getLastDamageCause().getCause() == DamageCause.BLOCK_EXPLOSION
-				&& RpgSystem.WorldList.get(event.getEntity().getWorld().toString()) != null)
+				&& (RpgSystem.WorldList.get(event.getEntity().getWorld().getName().toString()) != null))
 		{//tnt arrow exp
 			
 			java.util.List<Entity> nearby = event.getEntity().getNearbyEntities(25,25,25);
