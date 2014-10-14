@@ -93,10 +93,11 @@ public class DistanceLevel implements Listener {
 	{	//start of per world damage 
 		String world = monster.getWorld().getName().toString();
 		double basedamage = damageincrease;
-		Double worldstart = Reitzrpgmain.config.getDouble(world+".Level");
+		//Double worldstart = Reitzrpgmain.config.getDouble(world+".Level");
+		Integer worldstart = RpgSystem.WorldList.get(world);
 		if (worldstart == null || worldstart == 0)
 		{
-			worldstart = 1.00;
+			worldstart = 1;
 		}
 		return damageincrease + worldstart; //returns the value of the variable at top
 	}
@@ -122,7 +123,8 @@ public class DistanceLevel implements Listener {
 		if (event.isCancelled()) { return; }
 	
 		//If a monster is attacking a player
-		if (event.getDamager() instanceof Monster && event.getEntity() instanceof Player)
+		if (event.getDamager() instanceof Monster && event.getEntity() instanceof Player && 
+				RpgSystem.WorldList.get(event.getDamager().getWorld().toString()) != null) //added in this to see if the world is active
 		{	
 				//MONSTER IS ATTACKING PLAYER
 				Entity player = event.getEntity();
@@ -248,7 +250,8 @@ public class DistanceLevel implements Listener {
 				
         }
 		else if (event.getDamager() instanceof Player && event.getEntity() instanceof Monster
-				&& !(event.getDamager() instanceof Arrow) && event.getCause() != DamageCause.PROJECTILE)
+				&& !(event.getDamager() instanceof Arrow) && event.getCause() != DamageCause.PROJECTILE
+				&& RpgSystem.WorldList.get(event.getDamager().getWorld().toString()) != null) //check to see if world is active in config
 		{
 			
 				//PLAYER ATTACKING MONSTER not using an arrow
@@ -275,7 +278,8 @@ public class DistanceLevel implements Listener {
         			
 		}
 		else if(event.getDamager() instanceof Arrow && !(event.getEntity() instanceof Player)
-				&& event.getEntity() instanceof Monster && event.getCause() == DamageCause.PROJECTILE)
+				&& event.getEntity() instanceof Monster && event.getCause() == DamageCause.PROJECTILE
+				&& RpgSystem.WorldList.get(event.getDamager().getWorld().toString()) != null) //check to see if active in config
 		{ //Monster getting shot by an arrow by a player
             final Arrow arrow = (Arrow) event.getDamager();
  
@@ -308,7 +312,8 @@ public class DistanceLevel implements Listener {
             
 		}
 		else if(event.getDamager() instanceof Arrow && (event.getEntity() instanceof Player) && event.getCause() == 
-				DamageCause.PROJECTILE)
+				DamageCause.PROJECTILE
+				&& RpgSystem.WorldList.get(event.getDamager().getWorld().toString()) != null) //check to see if world is active
 		{
 			final Arrow arrow = (Arrow) event.getDamager();
 			if(arrow.getShooter() instanceof Player && event.getEntity() instanceof Player)
@@ -343,7 +348,8 @@ public class DistanceLevel implements Listener {
 			
 		}
 		else if(event.getDamager() instanceof Player && event.getEntity() instanceof Player
-				&& event.getCause() == DamageCause.ENTITY_ATTACK && event.getCause() != DamageCause.PROJECTILE)
+				&& event.getCause() == DamageCause.ENTITY_ATTACK && event.getCause() != DamageCause.PROJECTILE
+				&& RpgSystem.WorldList.get(event.getDamager().getWorld().toString()) != null)
 		{
 			
 			Player damager = (Player) event.getDamager();
@@ -372,7 +378,8 @@ public class DistanceLevel implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onFallDamage(EntityDamageEvent event)
 	{
-		if(event.getCause() == DamageCause.FALL && event.getEntity() instanceof Player)
+		if(event.getCause() == DamageCause.FALL && event.getEntity() instanceof Player
+				&& RpgSystem.WorldList.get(event.getEntity().getWorld().toString()) != null)//check to see if active world
 		{
 			Player player = (Player) event.getEntity();
 			//PlayerData pd = new PlayerData(player.getName());
@@ -400,6 +407,8 @@ public class DistanceLevel implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)//was lowest
 	public void onMobspawn(CreatureSpawnEvent event)
 	{
+		if(RpgSystem.WorldList.get(event.getEntity().getWorld().toString()) != null)//check to see if rpg world
+		{	
 			
 		
 		
@@ -491,7 +500,7 @@ public class DistanceLevel implements Listener {
 				event.getEntity().setHealth(finalhealth);
 				
 			}				
-				
+			}	
 			}	
 				
 				
@@ -512,7 +521,8 @@ public class DistanceLevel implements Listener {
 	{
 		if(event.getEntity().getLastDamageCause() == null ||
 				event.getEntity().getLastDamageCause().getCause() == null ||
-				event.getEntity().getLastDamageCause().getCause() == DamageCause.CONTACT)
+				event.getEntity().getLastDamageCause().getCause() == DamageCause.CONTACT
+				&& RpgSystem.WorldList.get(event.getEntity().getWorld().toString()) != null) //check to see if active world
 		{
 			return;//no exp or anything for contact damage so mob farms dont work
 		}
@@ -626,7 +636,8 @@ public class DistanceLevel implements Listener {
 			}
 		}
 		if(event.getEntity().getKiller() instanceof Player &&
-				event.getEntity().getLastDamageCause().getCause() == DamageCause.PROJECTILE)
+				event.getEntity().getLastDamageCause().getCause() == DamageCause.PROJECTILE
+				&& RpgSystem.WorldList.get(event.getEntity().getWorld().toString()) != null)
 		{
 			if(event.getEntity() instanceof Monster)
 			{
@@ -648,7 +659,8 @@ public class DistanceLevel implements Listener {
 			
 			
 		}
-		if(event.getEntity().getLastDamageCause().getCause() == DamageCause.BLOCK_EXPLOSION)
+		if(event.getEntity().getLastDamageCause().getCause() == DamageCause.BLOCK_EXPLOSION
+				&& RpgSystem.WorldList.get(event.getEntity().getWorld().toString()) != null)
 		{//tnt arrow exp
 			
 			java.util.List<Entity> nearby = event.getEntity().getNearbyEntities(25,25,25);

@@ -22,3 +22,6 @@ permissions:
     reitzrpg.reloadconfig:
        description: Allows you to reload config
        default: op
+    reitzrpg.rpgsystem:
+       description: Allows you access to the admin pannel
+       default: op      

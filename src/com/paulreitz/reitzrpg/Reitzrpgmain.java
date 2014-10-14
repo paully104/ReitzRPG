@@ -39,6 +39,7 @@ public class Reitzrpgmain extends JavaPlugin implements Listener{
 	public static File swordskills;
 	public static File bowskills;
 	public static File magicskills;
+	public static File worlds_config;
 	private static Plugin plugin;	
 	public void onEnable()
 	
@@ -70,11 +71,13 @@ public class Reitzrpgmain extends JavaPlugin implements Listener{
 		f = new File("plugins/ReitzRPG/Loot_Table.yml"); //$NON-NLS-1$
 		swordskills = new File("plugins/ReitzRPG/Sword-Skills_config.yml"); //$NON-NLS-1$
 		bowskills = new File("plugins/ReitzRPG/Bow-Skills_config.yml"); //$NON-NLS-1$
-		magicskills = new File("plugins/ReitzRPG/Magic-Skills_config.yml"); //$NON-NLS-1$
+		magicskills = new File("plugins/ReitzRPG/Magic-Skills_config.yml");
+		worlds_config = new File("plugins/ReitzRPG/Worlds_Config.yml");//$NON-NLS-1$
 		LootTables.LootTableDefault();
 		SwordSkillsConfig.DefaultConfig();
 		BowSkillsConfig.DefaultConfig();
 		MagicSkillsConfig.AddDefault();
+		RpgSystem.Worlds_Config();
 
 		
 		//end of custom yml test
