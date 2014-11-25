@@ -11,7 +11,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 public class BasicEXP implements Listener
 {
 
-	@EventHandler
+/*	@EventHandler
 	public void normalmonsterdeath(EntityDeathEvent event)
 	{
 	
@@ -36,4 +36,5 @@ public class BasicEXP implements Listener
 	}
 		
 }
+*/
 }

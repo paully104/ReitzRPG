@@ -74,31 +74,31 @@ public class ScoreboardStuff {
         	String displayname2 = displayname.substring(0, 1).toUpperCase() + displayname.substring(1);
         	objective.setDisplayName(ChatColor.GOLD+displayname2);
         	
-        	Score archery = objective.getScore(Bukkit.getOfflinePlayer(ChatColor.GOLD + Messages.getString("ScoreboardStuff.3"))); //$NON-NLS-1$
+        	Score archery = objective.getScore((ChatColor.GOLD + Messages.getString("ScoreboardStuff.3"))); //$NON-NLS-1$
         	archery.setScore(pd.getData().getInt("Archery"));  //$NON-NLS-1$
         	
-        	Score attack = objective.getScore(Bukkit.getOfflinePlayer(ChatColor.GOLD + Messages.getString("ScoreboardStuff.5"))); //$NON-NLS-1$
+        	Score attack = objective.getScore((ChatColor.GOLD + Messages.getString("ScoreboardStuff.5"))); //$NON-NLS-1$
         	attack.setScore(pd.getData().getInt("Attack")); //Integer only! //$NON-NLS-1$
         	
-        	Score defence = objective.getScore(Bukkit.getOfflinePlayer(ChatColor.GOLD + Messages.getString("ScoreboardStuff.7"))); //$NON-NLS-1$
+        	Score defence = objective.getScore((ChatColor.GOLD + Messages.getString("ScoreboardStuff.7"))); //$NON-NLS-1$
         	defence.setScore(pd.getData().getInt("Defense")); //$NON-NLS-1$
         	    
-        	Score magic = objective.getScore(Bukkit.getOfflinePlayer(ChatColor.GOLD + Messages.getString("ScoreboardStuff.9"))); //$NON-NLS-1$
+        	Score magic = objective.getScore((ChatColor.GOLD + Messages.getString("ScoreboardStuff.9"))); //$NON-NLS-1$
     	    magic.setScore(pd.getData().getInt("Magic")); //$NON-NLS-1$
     	    
-    	    Score mining = objective.getScore(Bukkit.getOfflinePlayer(ChatColor.GOLD + Messages.getString("ScoreboardStuff.11"))); //$NON-NLS-1$
+    	    Score mining = objective.getScore((ChatColor.GOLD + Messages.getString("ScoreboardStuff.11"))); //$NON-NLS-1$
     	    mining.setScore(pd.getData().getInt("Mining")); //$NON-NLS-1$
     	    
-    	    Score woodcutting = objective.getScore(Bukkit.getOfflinePlayer(ChatColor.GOLD + Messages.getString("ScoreboardStuff.13"))); //$NON-NLS-1$
+    	    Score woodcutting = objective.getScore((ChatColor.GOLD + Messages.getString("ScoreboardStuff.13"))); //$NON-NLS-1$
     	    woodcutting.setScore(pd.getData().getInt("Woodcutting")); //$NON-NLS-1$
 
-    	    Score combat_exp = objective.getScore(Bukkit.getOfflinePlayer(ChatColor.GOLD + Messages.getString("ScoreboardStuff.15"))); //$NON-NLS-1$
+    	    Score combat_exp = objective.getScore((ChatColor.GOLD + Messages.getString("ScoreboardStuff.15"))); //$NON-NLS-1$
     	    combat_exp.setScore(pd.getData().getInt("Combat-EXP")); //$NON-NLS-1$
     	    
-    	    Score digging = objective.getScore(Bukkit.getOfflinePlayer(ChatColor.GOLD + Messages.getString("ScoreboardStuff.17"))); //$NON-NLS-1$
+    	    Score digging = objective.getScore((ChatColor.GOLD + Messages.getString("ScoreboardStuff.17"))); //$NON-NLS-1$
     	    digging.setScore(pd.getData().getInt("Digging"));    //$NON-NLS-1$
     	    
-    	    Score fishing = objective.getScore(Bukkit.getOfflinePlayer(ChatColor.GOLD + Messages.getString("ScoreboardStuff.19"))); //$NON-NLS-1$
+    	    Score fishing = objective.getScore((ChatColor.GOLD + Messages.getString("ScoreboardStuff.19"))); //$NON-NLS-1$
     	    fishing.setScore(pd.getData().getInt("Fishing")); //$NON-NLS-1$
     	       	       	
         	player.setScoreboard(board);

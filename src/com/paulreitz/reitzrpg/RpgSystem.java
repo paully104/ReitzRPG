@@ -19,9 +19,10 @@ import org.bukkit.inventory.Inventory;
 public class RpgSystem implements CommandExecutor, Listener{
 	
 	    private Reitzrpgmain plugin;
-	    public static HashMap<String, Integer> WorldList = new HashMap<String, Integer>();
+	    public static HashMap<String, String> WorldList = new HashMap<String, String>();
 	    public static File file;
 	    public static YamlConfiguration worlds_config;
+	    public static int size;
 		
 	    public static void Worlds_Config()
 	    {
@@ -30,25 +31,29 @@ public class RpgSystem implements CommandExecutor, Listener{
 		worlds_config = YamlConfiguration.loadConfiguration(file);
 		worlds_config.addDefault("Worlds.1", null);
 		worlds_config.addDefault("Worlds.1.Name", "ReitzRPG");
-		worlds_config.addDefault("Worlds.1.Level", 5);
+		worlds_config.addDefault("Worlds.1.Level", "5");
 		worlds_config.addDefault("Worlds.2", null);
 		worlds_config.addDefault("Worlds.2.Name", "HundredMiles");
-		worlds_config.addDefault("Worlds.2.Level", 10);
+		worlds_config.addDefault("Worlds.2.Level", "10");
 		worlds_config.addDefault("Worlds.3", null);
 		worlds_config.addDefault("Worlds.3.Name", "PvPWorld");
-		worlds_config.addDefault("Worlds.3.Level", 15);
+		worlds_config.addDefault("Worlds.3.Level", "15");
 		worlds_config.options().copyDefaults(true);
 		try {
 			worlds_config.save(file);
-			int size = worlds_config.getConfigurationSection("Worlds").getKeys(false).size(); //get the size of worlds
-			System.out.println(size);
+			size = worlds_config.getConfigurationSection("Worlds").getKeys(false).size(); //get the size of worlds
+			System.out.println("The current world size list: " + size);
 			for(int i = 1;i < size+1;i++)
 			{
-				System.out.println(worlds_config.getString("Worlds."+i+".Name"));
-				WorldList.put(worlds_config.getString("Worlds."+i+".Name"), worlds_config.getInt("Worlds."+i+".Level"));
+				//System.out.println("Current value of i: " + i );
+				//System.out.println("worlds_config "+ worlds_config.getString("Worlds."+i+".Name"));
+				//System.out.println("worlds_Level "+ worlds_config.getString("Worlds."+i+".Level"));
+				WorldList.put(worlds_config.getString("Worlds."+i+".Name"), worlds_config.getString("Worlds."+i+".Level"));
+				//System.out.println(WorldList);
+				
 				
 			}
-			System.out.println(WorldList);
+
 			
 			
 		} catch (IOException e) {
@@ -112,7 +117,7 @@ public class RpgSystem implements CommandExecutor, Listener{
 			else if(args.length == 4 && args[0].contains("world") && args[1].contains("enable"))
 			{
 				String world = args[2];
-				int level = Integer.parseInt(args[3]);
+				String level = args[3];
 				WorldList.put(world, level);
 				
 				//rpgsystem world enable exampleworld

@@ -61,6 +61,33 @@ public class Config implements Listener
 	config.addDefault("CustomWeapons.Awesome_Sword.Lore.Mid", "\"MID\""); //$NON-NLS-1$ //$NON-NLS-2$
 	config.addDefault("CustomWeapons.Awesome_Sword.Lore.Bot", "\"BOT\""); //$NON-NLS-1$ //$NON-NLS-2$
 	config.addDefault("CustomWeapons.Awesome_Sword.Name", "Awesome Sword"); //$NON-NLS-1$ //$NON-NLS-2$
+	//custom armor start
+	config.addDefault("CustomArmors", null); //$NON-NLS-1$
+	config.addDefault("CustomArmors.Awesome_Helmet", null); //$NON-NLS-1$
+	config.addDefault("CustomArmors.Awesome_Helmet.Topleft", 0); //$NON-NLS-1$
+	config.addDefault("CustomArmors.Awesome_Helmet.Topmid", 280); //$NON-NLS-1$
+	config.addDefault("CustomArmors.Awesome_Helmet.Topright", 280); //$NON-NLS-1$
+	
+	config.addDefault("CustomArmors.Awesome_Helmet.Midleft", 280); //$NON-NLS-1$
+	config.addDefault("CustomArmors.Awesome_Helmet.Midmid", 280); //$NON-NLS-1$
+	config.addDefault("CustomArmors.Awesome_Helmet.Midright", 280); //$NON-NLS-1$
+
+	config.addDefault("CustomArmors.Awesome_Helmet.Botleft", 280); //$NON-NLS-1$
+	config.addDefault("CustomArmors.Awesome_Helmet.Botmid", 280); //$NON-NLS-1$
+	config.addDefault("CustomArmors.Awesome_Helmet.Botright", 280); //$NON-NLS-1$
+	config.addDefault("CustomArmors.Awesome_Helmet.Mindefense", 1); //$NON-NLS-1$
+	config.addDefault("CustomArmors.Awesome_Helmet.Maxdefense", 2); //$NON-NLS-1$
+	config.addDefault("CustomArmors.Awesome_Helmet.Material", 298);
+	config.addDefault("CustomArmors.Awesome_Helmet.Enchantment", "ARROW_DAMAGE");
+	config.addDefault("CustomArmors.Awesome_Helmet.EnchantmentLevel", 1);
+	config.addDefault("CustomArmors.Awesome_Helmet.Level", 10); //$NON-NLS-1$
+	config.addDefault("CustomArmors.Awesome_Helmet.Lore", null);	 //$NON-NLS-1$
+	config.addDefault("CustomArmors.Awesome_Helmet.Lore.Top", "\"TOP\""); //$NON-NLS-1$ //$NON-NLS-2$
+	config.addDefault("CustomArmors.Awesome_Helmet.Lore.Mid", "\"MID\""); //$NON-NLS-1$ //$NON-NLS-2$
+	config.addDefault("CustomArmors.Awesome_Helmet.Lore.Bot", "\"BOT\""); //$NON-NLS-1$ //$NON-NLS-2$
+	config.addDefault("CustomArmors.Awesome_Helmet.Name", "Awesome Helmet"); //$NON-NLS-1$ //$NON-NLS-2$
+	
+	//custom armor end
 	config.addDefault("TreasureChests.Chest_Example.Time",10);		 //$NON-NLS-1$
 	config.addDefault("TreasureChests.Chest_Example.RespawnTime",10);	 //$NON-NLS-1$
 	config.addDefault("TreasureChests.Chest_Example.Contents","9;");				 //$NON-NLS-1$ //$NON-NLS-2$

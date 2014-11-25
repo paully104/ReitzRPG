@@ -26,6 +26,8 @@ import org.bukkit.plugin.Plugin;
 public class CustomWeapons implements Listener
 {
 	static Plugin plugin = Reitzrpgmain.getPlugin();
+	static List<String>list;
+	static int size;
 	
     public CustomWeapons(Reitzrpgmain instance) {
         plugin = instance;   
@@ -33,15 +35,18 @@ public class CustomWeapons implements Listener
 
 	public static  void onEnableLoadWeapons()
 	{
-	Set<String> homes = plugin.getConfig().getConfigurationSection("CustomWeapons").getKeys(false);//true outputs all subkeys
-	List<String> list = new ArrayList<String>(homes);
-	int size = homes.size();
+	//Set<String> homes = plugin.getConfig().getConfigurationSection("CustomWeapons").getKeys(false);//true outputs all subkeys
+	Set<String> homes = API.getConfiguration().getConfigurationSection("CustomWeapons").getKeys(false);
+	/*List<String>*/ list = new ArrayList<String>(homes);
+	size = homes.size();
 	
 	for(int i = 0; i<size; i++)
 	{
 		String weapon = list.get(i);
-		int material = plugin.getConfig().getInt("CustomWeapons."+weapon+".Material"); //268 woodensword
-	    String name = plugin.getConfig().getString("CustomWeapons."+weapon+".Name");
+		//int material = plugin.getConfig().getInt("CustomWeapons."+weapon+".Material"); //268 woodensword
+	    //String name = plugin.getConfig().getString("CustomWeapons."+weapon+".Name");
+		int material = API.getConfiguration().getInt("CustomWeapons."+weapon+".Material"); //268 woodensword
+	    String name = API.getConfiguration().getString("CustomWeapons."+weapon+".Name");
 	    if (name == null)
 	    {
 	    	name = "ERROR";
@@ -191,14 +196,14 @@ public class CustomWeapons implements Listener
 	
 	}//end of on enable the weapons for creation
 	
-	
-	@EventHandler(ignoreCancelled = true,priority = EventPriority.LOWEST)
+/*	
+	@EventHandler(ignoreCancelled = true,priority = EventPriority.HIGHEST)//was lowest now Highest
 	public void onCustomDamageEvent(EntityDamageByEntityEvent event)
 	{
 		if (event.isCancelled()) { return; }
-		Set<String> homes = plugin.getConfig().getConfigurationSection("CustomWeapons").getKeys(false);//true outputs all subkeys
-		List<String> list = new ArrayList<String>(homes);
-		int size = homes.size();
+		//Set<String> homes = plugin.getConfig().getConfigurationSection("CustomWeapons").getKeys(false);//true outputs all subkeys
+		//List<String> list = new ArrayList<String>(homes);
+		//int size = homes.size();
 		if ( event.getDamager() instanceof Player)
 		{
 			for(int i = 0; i<size; i++)
@@ -246,12 +251,13 @@ public class CustomWeapons implements Listener
 		
 		
 	}
+	*/
 	@EventHandler
 	public void onCustomWeaponEquip(EntityDamageByEntityEvent event)//playerinteractevent
 	{
-		Set<String> homes = plugin.getConfig().getConfigurationSection("CustomWeapons").getKeys(false);//true outputs all subkeys
-		List<String> list = new ArrayList<String>(homes);
-		int size = homes.size();
+		//Set<String> homes = plugin.getConfig().getConfigurationSection("CustomWeapons").getKeys(false);//true outputs all subkeys
+		//List<String> list = new ArrayList<String>(homes);
+		//int size = homes.size();
 		
 		for(int i=0; i<size; i++)
 		{

@@ -1,5 +1,6 @@
 package com.paulreitz.reitzrpg;
 
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -17,8 +18,28 @@ public final class API {
     public static boolean mobexpshow;
     public static boolean blockexpshow;
     public static boolean tradingenabled;
+    public static FileConfiguration configuration;
+    public static FileConfiguration armors_configuration;
     
+    public static void SetArmorConfiguration(FileConfiguration config)
+    {
+    	armors_configuration = config;
+    }
+    public static FileConfiguration getArmorsConfiguration()
+    {
+    	return armors_configuration;
+    }
+    	
     
+    public static void setConfiguration(FileConfiguration config)
+    {
+    	configuration = config;
+    }
+    
+    public static FileConfiguration getConfiguration()
+    {
+    	return configuration;
+    }
     
     public static void setTradingEnabled()
     {

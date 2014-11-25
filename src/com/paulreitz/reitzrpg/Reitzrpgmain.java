@@ -20,6 +20,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.event.Listener;
@@ -40,6 +41,7 @@ public class Reitzrpgmain extends JavaPlugin implements Listener{
 	public static File bowskills;
 	public static File magicskills;
 	public static File worlds_config;
+	public static File custom_armors;
 	private static Plugin plugin;	
 	public void onEnable()
 	
@@ -67,13 +69,18 @@ public class Reitzrpgmain extends JavaPlugin implements Listener{
 		API.setAttackModifier(this);
 		API.setDefenseModifier(this);
 		API.setDistanceToMobDamageIncrease(this);
+		API.setConfiguration(config);
 		//custom yml test
 		f = new File("plugins/ReitzRPG/Loot_Table.yml"); //$NON-NLS-1$
 		swordskills = new File("plugins/ReitzRPG/Sword-Skills_config.yml"); //$NON-NLS-1$
 		bowskills = new File("plugins/ReitzRPG/Bow-Skills_config.yml"); //$NON-NLS-1$
 		magicskills = new File("plugins/ReitzRPG/Magic-Skills_config.yml");
 		worlds_config = new File("plugins/ReitzRPG/Worlds_Config.yml");//$NON-NLS-1$
+		custom_armors = new File("plugins/ReitzRPG/Custom_Armors.yml");
 		LootTables.LootTableDefault();
+		CustomArmors.Create_File();//create the armor files
+		FileConfiguration customConfig = YamlConfiguration.loadConfiguration(custom_armors); //load the config
+		API.SetArmorConfiguration(customConfig); //set the config
 		SwordSkillsConfig.DefaultConfig();
 		BowSkillsConfig.DefaultConfig();
 		MagicSkillsConfig.AddDefault();
@@ -89,7 +96,8 @@ public class Reitzrpgmain extends JavaPlugin implements Listener{
 		new OnBlockBreakWoodcuttingListener(this), new WalljumpHandler(), new GrapplingHook(), new PlayerTrading(this),
 		new PlayerFishEventListener(), new OnBlockBreakDiggingListener(this), new LockDoors(this), new BlockRightClick(),
 		new CustomWeapons(this), new RespawningChest(this), new Magic(this), new SwordSkills(this), new CostDoors(this),
-		new BowSkills(this), new LootTables(this), new Config(this), new PartySystem(this), new RpgSystem(this));
+		new BowSkills(this), new LootTables(this), new Config(this), new PartySystem(this), new RpgSystem(this),
+		new CustomArmors(this));
 		
 		getLogger().info("ReitzRPG is now enabled"); //$NON-NLS-1$
 		PlayerData.setup(this);// calls to PlayerData and initializes the individual configurations
@@ -98,6 +106,8 @@ public class Reitzrpgmain extends JavaPlugin implements Listener{
 		LockDoors.offlinepersistance();
 		CustomRecipes.CustomRecipes();
 		CustomWeapons.onEnableLoadWeapons();
+		CustomArmors.onEnableLoadWeapons(); //use the config
+		
 		new ArrayList<String>();
 		if(config.getBoolean("Monster-Levels") == true) //$NON-NLS-1$
 		{
@@ -230,6 +240,29 @@ public class Reitzrpgmain extends JavaPlugin implements Listener{
 			
 		}
 		
+		//start of remove mobs on load
+		try
+		{
+		List<World> worlds = Bukkit.getWorlds();
+		System.out.println("Removing all existing monsters to set level data!");
+		for(World w : worlds)
+		{	
+		List<Entity> entities = w.getEntities();
+			for ( Entity entity : entities)
+			{
+					if(entity instanceof Monster)
+						{
+							entity.removeMetadata("level", this); //$NON-NLS-1$
+							entity.remove();
+						}
+			}
+		}	
+		}
+		catch(NullPointerException e)
+		{
+			System.out.println("ERROR: Unable to remove mobs!");
+		}
+		
 		
 		
 	}//end of onEnable
@@ -271,7 +304,7 @@ public class Reitzrpgmain extends JavaPlugin implements Listener{
 			if(args.length == 0)
 			{
 				player.sendMessage(ChatColor.GREEN +"[ReitzRPG]"); //$NON-NLS-1$
-				player.sendMessage(ChatColor.GREEN +Messages.getString("Reitzrpgmain.103")+ ChatColor.GRAY+ ".16"); //$NON-NLS-1$ //$NON-NLS-2$
+				player.sendMessage(ChatColor.GREEN +Messages.getString("Reitzrpgmain.103")+ ChatColor.GRAY+ ".20"); //$NON-NLS-1$ //$NON-NLS-2$
 				player.sendMessage(ChatColor.GREEN +Messages.getString("Reitzrpgmain.102")+ ChatColor.GRAY+ "Paully104"); //$NON-NLS-1$ //$NON-NLS-2$
 				player.sendMessage(ChatColor.GREEN +Messages.getString("Reitzrpgmain.101")+ ChatColor.GRAY+ "/rpg help"); //$NON-NLS-1$ //$NON-NLS-2$
 			}	

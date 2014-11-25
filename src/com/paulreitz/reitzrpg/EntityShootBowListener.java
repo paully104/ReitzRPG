@@ -27,7 +27,7 @@ public class EntityShootBowListener implements Listener {
         if (event.getEntityType().toString().equals("PLAYER"))
         {
         	Player player = (Player) event.getEntity();
-			String player2 = player.getDisplayName();
+			String player2 = player.getName().toString();
 			//PlayerData pd = new PlayerData(player2);
 			PlayerData pd = PlayerJoinListener.users.get(player2);
 			Entity arrow = event.getProjectile();

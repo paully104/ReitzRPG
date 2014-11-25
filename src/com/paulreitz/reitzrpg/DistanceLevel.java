@@ -1,8 +1,11 @@
 
 package com.paulreitz.reitzrpg;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import net.minecraft.util.com.google.common.util.concurrent.AbstractScheduledService.Scheduler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,6 +46,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -50,8 +54,13 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
+import com.paulreitz.reitzrpg.CombatEngine;
+
 public class DistanceLevel implements Listener {
 	Reitzrpgmain plugin;  
+	CombatEngine combatengine = new CombatEngine();
+	CustomWeaponEngine customweaponengine = new CustomWeaponEngine();
+	CustomArmorEngine customarmorsengine = new CustomArmorEngine();
     public DistanceLevel(Reitzrpgmain instance) {
         plugin = instance;//tells us what the plugin is to use, in this case using the FileConfig!    
     }
@@ -93,8 +102,16 @@ public class DistanceLevel implements Listener {
 	{	//start of per world damage 
 		String world = monster.getWorld().getName().toString();
 		double basedamage = damageincrease;
+		Integer worldstart = null;
 		//Double worldstart = Reitzrpgmain.config.getDouble(world+".Level");
-		Integer worldstart = RpgSystem.WorldList.get(world);
+		try
+		{
+			worldstart = Integer.parseInt(RpgSystem.WorldList.get(world));
+		}
+		catch(NumberFormatException e)
+		{
+			
+		}
 		if (worldstart == null || worldstart == 0)
 		{
 			worldstart = 1;
@@ -108,8 +125,49 @@ public class DistanceLevel implements Listener {
 	    {
 	        if(val.getOwningPlugin().getName().equals(Reitzrpgmain.getPlugin().getName()))//was plugin.getName()
 	        {
-	        	
+	        	int size = RpgSystem.size;
+	        	double minlevel = 0.0;
+	        	int level2 = 1;
+	        	String world = monster.getWorld().getName();
+	        	for(int i = 1;i < size+1;i++)
+				{
+	        		
+	        		if(world == RpgSystem.WorldList.get("Worlds."+i+monster.getWorld().getName()));
+	        		{
+		        		try{
+			        		
+			        		String level = RpgSystem.WorldList.get("Worlds."+i+".Level");
+			        		if(level != null)
+			        		{	
+			        			level2 = Integer.parseInt(level);
+			        		}
+	
+			        		if(level2 != 1 || level2 != 0)
+			        		{
+			        			minlevel = level2;
+			        			
+			        		}
+			        		}
+			        		catch(NullPointerException e)
+			        		{
+			        			
+			        		}
+	        			
+	        		}
+	        		
+	        		
+
+	        		
+
+				}
+	        	if(val.asDouble() > minlevel)
+	        	{
 	            return val.asDouble();
+	        	}
+	        	else
+	        	{
+	        		return minlevel;
+	        	}
 	        }
 	    }
 	    //System.out.println("something went wrong?");
@@ -117,266 +175,102 @@ public class DistanceLevel implements Listener {
 	}
 
 	
-	@EventHandler(ignoreCancelled = true,priority=EventPriority.HIGHEST) //was highest
+	@EventHandler(ignoreCancelled = true,priority=EventPriority.HIGH) //was highest
 	public void onDamage(EntityDamageByEntityEvent event)
 	{
-		if (event.isCancelled()) { return; }
+		//System.out.println(event.getEntity().getWorld().getName());
+		//System.out.println(RpgSystem.WorldList.get(event.getEntity().getWorld().getName()));
+		if (event.isCancelled())
+		{ return; }
+		
+		if(event.getDamager() instanceof Monster && event.getDamager().hasMetadata("level") == false
+				&& RpgSystem.WorldList.get(event.getDamager().getWorld().getName()) != null)
+		{
+			//System.out.println("Correcting mob so it has metadata");
+			Monster monster = (Monster) event.getDamager();
+			Location monsterlocation = monster.getLocation().subtract(0, -1, 0);
+			setMonsterLevel(monsterlocation.getX(),monsterlocation.getY(), monsterlocation.getZ(),monster);
+			
+			String mobname = event.getDamager().getType().toString();
+			outsidemobname = mobname;
+			//String formatter = String.format("%1$.2f", getMonsterLevel(event.getEntity()));
+			String formatter = String.format("%1$.0f", getMonsterLevel(event.getEntity()));
+			//String mobnamelevel = mobname + " " + getMonsterLevel();
+			double d = Math.random();
+			double e = Math.random();
+
+			String mobnamelevel = mobname + " " + "lv: " + formatter;
+			//System.out.println(mobnamelevel);
+			if(API.fastmobs == true)
+			{
+			monster.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 18000, 1));
+			}
+			monster.setCustomName(mobnamelevel);
+			monster.setCustomNameVisible(true);
+			//double health = event.getEntity().getMaxHealth();
+			double health = 2.0;
+			monster.setMetadata("level", new FixedMetadataValue(plugin, getMonsterLevel(event.getEntity())));
+			monster.setMaxHealth(getMonsterLevel(event.getEntity()) * API.getMonsterHealthBonus()); //health formula is now lv *2
+			double finalhealth = monster.getMaxHealth();
+			monster.setHealth(finalhealth);	
+					
+		}
 	
 		//If a monster is attacking a player
 		if (event.getDamager() instanceof Monster && event.getEntity() instanceof Player && 
-				RpgSystem.WorldList.get(event.getDamager().getWorld().toString()) != null) //added in this to see if the world is active
+				RpgSystem.WorldList.get(event.getDamager().getWorld().getName()) != null) //added in this to see if the world is active
 		{	
 				//MONSTER IS ATTACKING PLAYER
-				Entity player = event.getEntity();
-				Player player2 = (Player) player;
-				PlayerData pd = new PlayerData(player2.getName());
-				int defence = pd.getData().getInt("Defense");
-				int defencemodifier = API.defensemod;
-				Entity monster = event.getDamager();
+				Player player = (Player) event.getEntity();
+			    Entity monster = event.getDamager();
 				//String formatter = String.format("%1$.2f", getMonsterLevel(event.getDamager()));
-				String formatter = String.format("%1$.0f", getMonsterLevel(event.getDamager()));
-				Double.parseDouble(formatter);
+				//String formatter = String.format("%1$.0f", getMonsterLevel(event.getDamager())); this was for the levels
+				//Double.parseDouble(formatter);
 				//double monsterdamage = event.getDamage() +  getSpawnLevel(monster);
-				double monsterdamage = getSpawnLevel(monster);
+				//double monsterdamage = getSpawnLevel(monster);
+				double damage = combatengine.calculateMonsterAttackingPlayer(player, monster, event);
+				damage = damage - customarmorsengine.CalculateDefenseFromCustomArmor(plugin, player, CustomArmors.size, CustomArmors.list, event);
+				event.setDamage(damage);
 
-				
-					if(event.getDamager().getType().name().equalsIgnoreCase("Creeper"))
-					{
-						double creeperdamage = (monsterdamage*2.5)-(defence/defencemodifier);
-						if(creeperdamage < 2.00)
-						{
-							event.setDamage(2.00);
-							return;
-						}	
-						else
-						{
-							event.setDamage(creeperdamage);
-							return;
-						}	
-						
-					}
-					else if(event.getDamager().getType().name().equalsIgnoreCase("Zombie"))
-					{
-						double zombiedamage = (monsterdamage)-(defence/defencemodifier);
-						if(zombiedamage < 1.00)
-						{
-							event.setDamage(1.00);
-							return;
-						}	
-						else
-						{
-							event.setDamage(zombiedamage);
-							return;
-						}	
-						
-					}
-					else if(event.getDamager().getType().name().equalsIgnoreCase("Skeleton"))
-					{
-						double creeperdamage = (monsterdamage)-(defence/defencemodifier);
-						if(creeperdamage < 1.00)
-						{
-							event.setDamage(1);
-							return;
-						}	
-						else
-						{
-							event.setDamage((monsterdamage)-(defence/defencemodifier));
-							return;
-						}
-					}	
-						else if(event.getDamager().getType().name().equalsIgnoreCase("Spider"))
-						{
-							double creeperdamage = (monsterdamage)-(defence/defencemodifier);
-							if(creeperdamage < 1.00)
-							{
-								event.setDamage(1);
-								return;
-							}	
-							else
-							{
-								event.setDamage((monsterdamage)-(defence/defencemodifier));
-								return;
-							}
-						
-						
-						
-						}
-						else if(event.getDamager().getType().name().equalsIgnoreCase("Pigman"))
-						{
-							double creeperdamage = (monsterdamage)-(defence/defencemodifier);
-							if(creeperdamage < 1.00)
-							{
-								event.setDamage(1);
-								return;
-							}	
-							else
-							{
-								event.setDamage((monsterdamage)-(defence/defencemodifier));
-								return;
-							}
-						
-						
-						
-						}
-					else if(event.getDamager().getType().name().equalsIgnoreCase("Enderman"))
-					{
-						double enderdamage = (monsterdamage*2)-(defence/defencemodifier);
-						if (enderdamage < 1)
-						{
-							event.setDamage(1);
-							return;
-						}	
-						else
-						{
-							event.setDamage(enderdamage);
-							return;
-						}	
-					}	
-					else
-					{
-						if(monsterdamage < 1.0)
-						{
-						event.setDamage(1);//higher modifier more damage taken 
-						return;
-						}
-						else
-						{
-							event.setDamage((monsterdamage) - (defence/defencemodifier));
-							return;
-						}	
-						
-					}	
 					
 				
         }
 		else if (event.getDamager() instanceof Player && event.getEntity() instanceof Monster
 				&& !(event.getDamager() instanceof Arrow) && event.getCause() != DamageCause.PROJECTILE
-				&& RpgSystem.WorldList.get(event.getDamager().getWorld().toString()) != null) //check to see if world is active in config
+				&& RpgSystem.WorldList.get(event.getDamager().getWorld().getName()) != null) //check to see if world is active in config
 		{
 			
 				//PLAYER ATTACKING MONSTER not using an arrow
 				Entity player = event.getDamager();
 				Player player2 = (Player) player;
-				PlayerData pd = PlayerJoinListener.users.get(player2.getName());
-				int attack = pd.getData().getInt("Attack");
-				int attackmodifier = API.attackmod;
 				Entity monster = event.getEntity();
-				int newdamage = attack/attackmodifier;
-				int newdamage2 = (int) (newdamage - getSpawnLevel(monster));
-				if(newdamage2 < 1)
-				{
-					event.setDamage(1);
-					return;
-				}
-				if(newdamage2 > 1 && player2.getItemInHand() == null)
-				{
-					event.setDamage(newdamage2/2);
-					return;
-				}
-				else
-				{
-					
-					event.setDamage(newdamage2);
-					return;
-				}
+				int damage = combatengine.calculatePlayerAttackingMonster(player, monster, event);
+				int weapondamage = customweaponengine.CalculateDamageFromCustomWeapon(plugin, player2, CustomWeapons.size, CustomWeapons.list, event);
+				event.setDamage(damage + weapondamage);
 				
+
 				
         			
 		}
-		else if(event.getDamager() instanceof Arrow && !(event.getEntity() instanceof Player)
-				&& event.getEntity() instanceof Monster && event.getCause() == DamageCause.PROJECTILE
-				&& RpgSystem.WorldList.get(event.getDamager().getWorld().toString()) != null) //check to see if active in config
-		{ //Monster getting shot by an arrow by a player
+		else if(event.getDamager() instanceof Arrow && event.getCause() == DamageCause.PROJECTILE
+				&& RpgSystem.WorldList.get(event.getDamager().getWorld().getName()) != null) //check to see if active in config
+		{ //ARROW EVENT
             final Arrow arrow = (Arrow) event.getDamager();
  
-            if(arrow.getShooter() instanceof Player)
-            {
-            	
-            	int attackmodifier = API.attackmod;
-            	Player player = (Player) arrow.getShooter();
-            	if(player.getItemInHand().getType() == Material.BOW)
+            	int weapondamage =0;
+            	int damage =combatengine.calculateProjectileAttackEvent(arrow, event.getEntity(), event);
+            	if(arrow.getShooter() instanceof Player)
             	{
-            		//PlayerData pd = new PlayerData(player.getName()); old system
-            		PlayerData pd = PlayerJoinListener.users.get(player.getName());
-            	if((pd.getData().getInt("Archery")/attackmodifier)+1- getSpawnLevel(event.getEntity()) > 1)
-            			{
-            	event.setDamage((pd.getData().getInt("Archery")/attackmodifier)+1- getSpawnLevel(event.getEntity()));
-            	return;
-            			}
-            	else
-            		{
-            		event.setDamage(1);
-            		return;
-            		}
+				weapondamage = customweaponengine.CalculateDamageFromCustomWeapon(plugin, (Player)arrow.getShooter(), CustomWeapons.size, CustomWeapons.list, event);
             	}
             	else
             	{
-            		return;
+            		weapondamage = 0;
             	}
-            	
-            }
-            
-		}
-		else if(event.getDamager() instanceof Arrow && (event.getEntity() instanceof Player) && event.getCause() == 
-				DamageCause.PROJECTILE
-				&& RpgSystem.WorldList.get(event.getDamager().getWorld().toString()) != null) //check to see if world is active
-		{
-			final Arrow arrow = (Arrow) event.getDamager();
-			if(arrow.getShooter() instanceof Player && event.getEntity() instanceof Player)
-			{
-				//player shooting player with a bow.
-			int attackmodifier = API.attackmod;
-        	Player player = (Player) arrow.getShooter();//person who is shooting the bow
-        	Player target = (Player) event.getEntity(); //person who is getting shot
-        	PlayerData pd = PlayerJoinListener.users.get(player.getName());//changed from old way
-        	PlayerData pd2 = PlayerJoinListener.users.get(target.getName());
-        	if(player.getItemInHand().getType() == Material.BOW)
-        	{
-        	int damage = pd.getData().getInt("Archery");
-        	int defense = pd2.getData().getInt("Defense");
-        	if((damage - defense) > 1)
-        	{
-        	event.setDamage(damage - defense);
-        	return;
-        	}
-        	else
-        		event.setDamage(1);
-        	return;
-        	
-			}
-        	else
-        	{
-        		return;
-        	}
-			}
-			return;
-			
-			
-		}
-		else if(event.getDamager() instanceof Player && event.getEntity() instanceof Player
-				&& event.getCause() == DamageCause.ENTITY_ATTACK && event.getCause() != DamageCause.PROJECTILE
-				&& RpgSystem.WorldList.get(event.getDamager().getWorld().toString()) != null)
-		{
-			
-			Player damager = (Player) event.getDamager();
-			Player target = (Player) event.getEntity();
-        	//PlayerData pd = new PlayerData(damager.getName());
-        	//PlayerData pd2 = new PlayerData(target.getName());
-			PlayerData pd = PlayerJoinListener.users.get(damager.getName());
-			PlayerData pd2 = PlayerJoinListener.users.get(target.getName());
-        	int damage = pd.getData().getInt("Attack");
-        	int armor = pd.getData().getInt("Defense");
-        	if((damage - armor) > 1)
-        	{
-        		event.setDamage(damage-armor);
-        	}
-        	else
-        	{
-        		event.setDamage(1);
-        	}
-			
-			
-		}
+				event.setDamage(damage + weapondamage);
+
+		} 
+
 
 		return;
 	
@@ -524,9 +418,11 @@ public class DistanceLevel implements Listener {
 		//}	
 		
 	}
-	@EventHandler(priority = EventPriority.LOWEST)
+	
+	@EventHandler(priority = EventPriority.LOWEST)//was lowest
 	public void onMobDeath(final EntityDeathEvent event)
 	{
+		//event.getEntity().remove();
 		if(event.getEntity().getLastDamageCause() == null ||
 				event.getEntity().getLastDamageCause().getCause() == null ||
 				event.getEntity().getLastDamageCause().getCause() == DamageCause.CONTACT
@@ -534,7 +430,17 @@ public class DistanceLevel implements Listener {
 		{
 			return;//no exp or anything for contact damage so mob farms dont work
 		}
-		Location location = event.getEntity().getLocation();
+		else
+		{
+			Location location = null;
+			try{
+				location = event.getEntity().getLocation();
+			}
+			catch(NullPointerException e)
+			{
+				System.out.println("Unable to get location of mob on death");
+				return;
+			}
 		if (event.getEntity().getKiller() instanceof Player && event.getEntity() instanceof Monster)
 		{
 	    	if(event.getEntity().getKiller().getPlayer().getGameMode() == GameMode.CREATIVE)
@@ -547,6 +453,8 @@ public class DistanceLevel implements Listener {
 			event.setDroppedExp((int) newexperiencedrop);
 			//start of exp hologram
 			//FileConfiguration config = Reitzrpgmain.config;
+			
+			
 			if(API.mobexpshow == true)
 			{
 			long time = new java.util.Date().getTime();
@@ -558,6 +466,10 @@ public class DistanceLevel implements Listener {
 
 			new BukkitRunnable(){
 
+			
+			
+			
+				
 			@Override
 			public void run(){
 				
@@ -574,6 +486,8 @@ public class DistanceLevel implements Listener {
 				{
 					c.destroy();
 					this.cancel();
+				
+					
 				}
 
 
@@ -586,6 +500,7 @@ public class DistanceLevel implements Listener {
 			{
 				
 			}
+			
 			}
 
 				
@@ -594,124 +509,98 @@ public class DistanceLevel implements Listener {
 			
 			
 			//end of exp hologram
-			
-			
-			
-			
-			java.util.List<Entity> nearby = event.getEntity().getNearbyEntities(25,25,25);
-			for (Entity entity : nearby)
-			{
-				if (entity instanceof Player)
-				{
-					
-					String leader = PartySystem.partyleader.get(event.getEntity().getKiller().getName());
-					List followers = PartySystem.partylist.get(leader);
-					//Player p = event.getEntity().getKiller();
-					Player p = (Player) entity;
-			    	if(p.getGameMode() == GameMode.CREATIVE)
-			    	{
-			    		return; //no exp for creative!
-			    	}
-			    	//if leader is null they have no party leader they are solo
-			    	//if followers is null it means once again they are solo
-			    	if(leader == null || followers == null || followers.contains(p.getName()))
-			    	{
-			    	
-			    		//PlayerData pd = new PlayerData(p.getName());
-			    		PlayerData pd = PlayerJoinListener.users.get(p.getName());
-			    		int player_experience = pd.getData().getInt("Combat-EXP");
-			    		int newexp_total = (int) (newexperiencedrop + player_experience);
-			    		//pd.getData().set("Combat-EXP", newexp_total);
-			    		PlayerJoinListener.users.get(p.getName()).getData().set("Combat-EXP", newexp_total);
-			    		//pd.save();
-			    		ScoreboardStuff.manageScoreboard(p, "TeamName");//update exp?
-			    		event.getEntity().removeMetadata("level", plugin);
-						if(event.getEntity().getCustomName() != null &&
-							event.getEntity().getCustomName().contains("King"))
-							{
-								
-								p.getInventory().addItem(new ItemStack(Material.DIAMOND));
-								p.getInventory().addItem(new ItemStack(Material.DIAMOND));
-								p.getInventory().addItem(new ItemStack(Material.DIAMOND));
-						
-						
-							}
-						
-			    	}
-				}	
-			    	
-			    	
-			}
-		}
-		if(event.getEntity().getKiller() instanceof Player &&
-				event.getEntity().getLastDamageCause().getCause() == DamageCause.PROJECTILE
-				&& (RpgSystem.WorldList.get(event.getEntity().getWorld().getName().toString()) != null))
-		{
-			if(event.getEntity() instanceof Monster)
-			{
-			Entity monster = event.getEntity();
-			double newexperiencedrop = event.getDroppedExp() + (getSpawnLevel(monster) * 3); //exp multiplier is 3 x the level
-			event.setDroppedExp((int) newexperiencedrop);
 
-			Player player = (Player)event.getEntity().getKiller();
-			PlayerData pd = PlayerJoinListener.users.get(player.getName());
-			int player_experience = pd.getData().getInt("Combat-EXP");
-			int newexp_total = (int) (newexperiencedrop + player_experience);
-			//pd.getData().set("Combat-EXP", newexp_total);
-			PlayerJoinListener.users.get(player.getName()).getData().set("Combat-EXP", newexp_total);
-			//pd.save();
-			ScoreboardStuff.manageScoreboard(player, "TeamName");//update exp?
-			
-			}
-			
-			
-			
-		}
-		if(event.getEntity().getLastDamageCause().getCause() == DamageCause.BLOCK_EXPLOSION
-				&& (RpgSystem.WorldList.get(event.getEntity().getWorld().getName().toString()) != null))
-		{//tnt arrow exp
-			
-			java.util.List<Entity> nearby = event.getEntity().getNearbyEntities(25,25,25);
-			for (Entity entity : nearby)
+			for (Player other : Bukkit.getOnlinePlayers())
 			{
-				if (entity instanceof Player)
-				{
-					String leader = PartySystem.partyleader.get(event.getEntity().getKiller());
-					List followers = PartySystem.partylist.get(leader);
+				  if (other.getLocation().distance(event.getEntity().getKiller().getLocation()) <= 50)
+				   {
+					  Player killer = event.getEntity().getKiller();
+					  //System.out.println("the killer is : " + killer); //who killed it
+					  String partyleader = PartySystem.inparty.get(killer.getName()); //get the party leader if they are in a party they should have a leader
+					  //System.out.println("The party leader is: " + partyleader); //states the leader
+					  PartyEngine party = PartySystem.partylist.get(partyleader); //the leader will have his party in the list
+					  //System.out.println("The party is : " + party);
+					  if(party != null)
+					  {	  
+						  List people = party.GetMembersLoop();
+						  //System.out.println("Player is in a party");
+						  
+						 // System.out.println(people);
+					  	for(Object peeps : people)
+					  	{
+					  		
+					  		String name = (String) peeps;
+					  		try//lets go crazy
+					  		{
+								Player person = Bukkit.getPlayer(name);
+									int experience = event.getDroppedExp();
+										//Player player = other;
 					
-					//Player p = event.getEntity().getKiller();
-					Player p = (Player) entity;
-			    	if(p.getGameMode() == GameMode.CREATIVE)
-			    	{
-			    		return; //no exp for creative!
-			    	}
-			    	if(leader == null || followers == null || followers.contains(p.getName()))
-			    	{
-					Entity monster = event.getEntity();
-					double newexperiencedrop = event.getDroppedExp() + (getSpawnLevel(monster) * 2); //exp multiplier is 3 x the level
-					event.setDroppedExp((int) newexperiencedrop);
-					PlayerData pd = new PlayerData(p.getName());
-					int player_experience = pd.getData().getInt("Combat-EXP");
-					int newexp_total = (int) (newexperiencedrop + player_experience);
-					//pd.getData().set("Combat-EXP", newexp_total);
-					PlayerJoinListener.users.get(p.getName()).getData().set("Combat-EXP", newexp_total);
-					//pd.save();
-					ScoreboardStuff.manageScoreboard(p, "TeamName");//update exp?
-					event.getEntity().removeMetadata("level", plugin);
+									Integer combatexp = PlayerJoinListener.users.get(person.getName()).getData().getInt("Combat-EXP");
+									int newtotal = experience + combatexp;
 					
-			    	}
-				}
-			}
+									PlayerJoinListener.users.get(person.getName()).getData().set("Combat-EXP", newtotal);
+									ScoreboardStuff.manageScoreboard(person.getPlayer(), "TeamName"); 
+					  		}
+					  		catch(Error e)
+					  		{
+							
+					  		}
+					    }
+						int experience = event.getDroppedExp();
+						//Player player = other;
+	
+					Integer combatexp = PlayerJoinListener.users.get(partyleader).getData().getInt("Combat-EXP");
+					int newtotal = experience + combatexp;
+	
+					PlayerJoinListener.users.get(partyleader).getData().set("Combat-EXP", newtotal);
+					ScoreboardStuff.manageScoreboard(Bukkit.getPlayer(partyleader), "TeamName"); 
+					  	
+				    }
+					  else
+					  {
+						     //System.out.println("Player is a lone shark!"); //this also checks that the player is indeed a player not npc
+						  	for(Player playercheck : Bukkit.getOnlinePlayers())
+						  	{
+						  		if(playercheck == killer)
+						  		{
+						  			System.out.println("A real player is getting exp");
+						  			Integer combatexp = PlayerJoinListener.users.get(event.getEntity().getKiller().getName()).getData().getInt("Combat-EXP");
+						  			int experience = event.getDroppedExp();
+						  			int newtotal = experience + combatexp;
 			
+						  			PlayerJoinListener.users.get(event.getEntity().getKiller().getName()).getData().set("Combat-EXP", newtotal);
+						  			ScoreboardStuff.manageScoreboard(event.getEntity().getKiller(), "TeamName"); 
+						  		}
+						  		
+						  	}
+						  	
+					  		}
+
+						  
+					  
+				   }
+
+					
+				}
+				
+		}
+		else
+		{
+
 			
 		}
-		else if(event.getEntity().hasMetadata("Level"))
+		
+	 }
+		
+		if(event.getEntity().hasMetadata("Level"))
 		{
 			event.getEntity().removeMetadata("level", plugin);
 		}
-		
-
-		
+		else
+		{
+			return;
+		}	
 		
 	}	
 
